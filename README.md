@@ -77,9 +77,9 @@ streamlit run app.py
 * **File type:** `.xlsx` or `.xls`
 * **Columns required:**
 
-  * `Order_YearMonth` → Order date (monthly granularity)
-  * `Total_OrderPrice` → Sales/Collection value (numeric)
-  * `ONL_Outlet` → Outlet name (for filtering, optional)
+  * `YearMonth` → Order Date (monthly granularity)
+  * `Price` → Sales/Collection value (numeric)
+  * `Outlet` → Outlet name (for filtering, optional)
 
 > Column names are **case-sensitive**. Extra columns are ignored.
 
