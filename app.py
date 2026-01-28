@@ -101,7 +101,11 @@ model_choice = st.sidebar.selectbox("Forecast Model", ["Prophet", "Random Forest
 selected_outlet = st.sidebar.selectbox("Outlet", ["All"] + sorted(df["ONL_Outlet"].unique()))
 horizon = st.sidebar.slider("Forecast Horizon (Months)", 1, 12, 6)
 conf_pct = st.sidebar.slider("Safety Buffer (%)", 10, 80, 55) / 100
-
+# =========================================================
+# DYNAMIC TITLE WITH BRANCH NAME
+# =========================================================
+branch_title = selected_outlet if selected_outlet != "All" else "All Outlets"
+st.subheader(f" Branch: {branch_title}")
 # Training Years Filter
 min_year = int(df["Order_YearMonth"].dt.year.min())
 max_year = int(df["Order_YearMonth"].dt.year.max())
