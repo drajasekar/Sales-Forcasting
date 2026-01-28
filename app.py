@@ -35,13 +35,47 @@ def format_currency(v):
 def load_data(uploaded_file):
     df = pd.read_excel(uploaded_file)
     df.columns = df.columns.str.strip()
+
+    # ---------------------------------------------
+    # NORMALIZE COLUMN NAMES (AUTO-DETECT FORMAT)
+    # ---------------------------------------------
+    column_map = {}
+
+    if {"SS_SourceSite", "Bill_YearMonth", "TotalAmount"}.issubset(df.columns):
+        column_map = {
+            "SS_SourceSite": "ONL_Outlet",
+            "Bill_YearMonth": "Order_YearMonth",
+            "TotalAmount": "Total_OrderPrice"
+        }
+
+    elif {"ONL_Outlet", "Order_YearMonth", "Total_OrderPrice"}.issubset(df.columns):
+        column_map = {}  # already correct
+
+    else:
+        raise ValueError(
+            "Invalid Excel format. Required columns:\n"
+            "• SS_SourceSite, Bill_YearMonth, TotalAmount\n"
+            "OR\n"
+            "• ONL_Outlet, Order_YearMonth, Total_OrderPrice"
+        )
+
+    df = df.rename(columns=column_map)
+
+    # ---------------------------------------------
+    # STANDARDIZE DATA TYPES
+    # ---------------------------------------------
     df["Order_YearMonth"] = pd.to_datetime(
         df["Order_YearMonth"].astype(str).str[:7] + "-01",
         errors="coerce"
     )
-    df["Total_OrderPrice"] = pd.to_numeric(df["Total_OrderPrice"], errors="coerce").fillna(0)
-    return df
 
+    df["Total_OrderPrice"] = pd.to_numeric(
+        df["Total_OrderPrice"], errors="coerce"
+    ).fillna(0)
+
+    df["ONL_Outlet"] = df["ONL_Outlet"].fillna("Unknown")
+
+    return df
 # =========================================================
 # FILE UPLOAD
 # =========================================================
